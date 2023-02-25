@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+
+  auth-server:
+    build: auth-server
+    image: auth-server
+    container_name: Auth_server
+    ports:
+      - "9000:9000"
+
+  gateway:
+    build: gateway
+    image: gateway
+    container_name: Gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-server
+      - training-server
+    environment:
+      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_SPRING_ISSUER-URI=http://localhost:9000
+
+  training-server:
+    build: training-server
+    image: training-server
+    container_name: Training_server
+    ports:
+      - "8090:8090"
+    depends_on:
+      - auth-server
