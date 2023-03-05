@@ -1,31 +1,34 @@
-version: '3.1'
+version: '3.8'
 
 services:
-
-  auth-server:
-    build: auth-server
-    image: auth-server
-    container_name: Auth_server
-    ports:
-      - "9000:9000"
 
   gateway:
     build: gateway
     image: gateway
-    container_name: Gateway
+    container_name: Gym_gateway
     ports:
       - "8080:8080"
     depends_on:
-      - auth-server
-      - training-server
+      - main-server
+      - main-db
     environment:
-      - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_SPRING_ISSUER-URI=http://localhost:9000
+      - MAIN_SERVER_URL=http://main-server:8082
 
-  training-server:
-    build: training-server
-    image: training-server
+  main-server:
+    build: main-server
+    image: main-server
     container_name: Training_server
     ports:
-      - "8090:8090"
+      - "8082:8082"
     depends_on:
-      - auth-server
+      - main-db
+
+  main-db:
+    image: postgres:14-alpine
+    container_name: MainDB
+    ports:
+      - "6546:5432"
+    environment:
+      - POSTGRES_DB=main-db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
