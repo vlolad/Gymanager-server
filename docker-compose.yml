@@ -2,24 +2,13 @@ version: '3.8'
 
 services:
 
-  gateway:
-    build: gateway
-    image: gateway
-    container_name: Gym_gateway
-    ports:
-      - "8080:8080"
-    depends_on:
-      - main-server
-      - main-db
-    environment:
-      - MAIN_SERVER_URL=http://main-server:8082
-
   main-server:
-    build: main-server
+    build:
+      dockerfile: Dockerfile
     image: main-server
     container_name: Training_server
     ports:
-      - "8082:8082"
+      - "8080:8080"
     depends_on:
       - main-db
 
