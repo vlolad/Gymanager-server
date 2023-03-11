@@ -1,19 +1,22 @@
+BEGIN;
+
+DROP TABLE IF EXISTS users;
 DROP SEQUENCE IF EXISTS main_id_sequence;
 DROP FUNCTION IF EXISTS generateid;
-DROP TABLE IF EXISTS users;
 
 CREATE SEQUENCE main_id_sequence;
 
-create function generateid() returns char(8) as
-    $$
+create function generateid()
+    returns char(8) as
+'
 declare
-str text := '0123456789abcdefghijklmnopqrstuvwxyz';
+str text := ''0123456789abcdefghijklmnopqrstuvwxyz'';
     val bigint;
     id_ text;
     mod int;
 begin
-    val := nextval('main_id_sequence');
-    id_ := '';
+    val := nextval(''main_id_sequence'');
+    id_ := '''';
     while (length(id_) < 8)
         loop
             mod = val % 36;
@@ -21,10 +24,10 @@ begin
             val = val / 36;
 end loop;
 return id_;
-return 'null';
+return ''null'';
 end;
-$$
-language plpgsql;
+'
+    language plpgsql;
 
 CREATE TABLE users
 (
