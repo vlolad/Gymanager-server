@@ -8,11 +8,11 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "_users")
+@Table(name = "_roles")
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserData {
+public class Role {
     @Id
     @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.IdGenerator")
     @GeneratedValue(generator = "entity_id")
@@ -22,12 +22,7 @@ public class UserData {
     @Column(name = "name", length = 32, nullable = false)
     private String name;
 
-    @Column(name="login", length = 32, nullable = false, unique = true)
-    private String login;
-
-    @Column(name = "email", length = 128, nullable = false, unique = true)
-    private String email;
-
-    @Column(name = "password", length = 128, nullable = false)
-    private String password;
+    public Role(String name) {
+        this.name = name;
+    }
 }
