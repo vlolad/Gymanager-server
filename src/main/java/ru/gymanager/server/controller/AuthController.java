@@ -2,6 +2,7 @@ package ru.gymanager.server.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,5 +25,6 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> createAuthToken(@RequestBody @Valid AuthRequest authRequest) {
 
+        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
     }
 }

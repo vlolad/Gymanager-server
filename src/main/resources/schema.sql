@@ -2,8 +2,8 @@ BEGIN;
 
 DROP TABLE IF EXISTS users;
 DROP SEQUENCE IF EXISTS main_id_sequence;
-DROP FUNCTION IF EXISTS generateid;
-
+DROP FUNCTION IF EXISTS generateid CASCADE;
+-- Author: https://github.com/PavelProjects
 CREATE SEQUENCE main_id_sequence;
 
 create function generateid()
@@ -29,7 +29,7 @@ end;
 '
     language plpgsql;
 
-CREATE TABLE users
+CREATE TABLE _users
 (
     id       char(8) PRIMARY KEY DEFAULT generateid(),
     name     varchar(32)  NOT NULL,
