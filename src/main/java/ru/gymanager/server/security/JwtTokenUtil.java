@@ -35,10 +35,6 @@ public class JwtTokenUtil implements Serializable {
                         Environment env) {
         this.userDetailsService = userDetailsService;
         this.secret = env.getProperty("JWT_SECRET", "littlesecret");
-        // TODO @pavelprojects недостижимо же не? Выше в случае чего выдаст defaultValue
-        if(StringUtils.isBlank(secret)){
-            throw new RuntimeException("Jwt secret is missing!");
-        }
     }
 
     //retrieve username from jwt token

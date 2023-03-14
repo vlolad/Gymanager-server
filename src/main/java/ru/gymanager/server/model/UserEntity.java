@@ -6,8 +6,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "users")
@@ -36,7 +36,6 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
     joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            // TODO role list
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private Collection<Role> roles = new ArrayList<>();
+    private Collection<Role> roles = new HashSet<>();
 }
