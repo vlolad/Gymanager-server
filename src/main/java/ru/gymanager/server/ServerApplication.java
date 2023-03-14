@@ -31,6 +31,7 @@ public class ServerApplication {
                 log.info("TEST USER CREATED WITH ID={}", user.getId());
                 roleService.setRoleToUser("test_admin", "ADMIN");
             }
+            // TODO test login to constant
             if (userService.getUserByLogin("test_dummy") == null) {
                 userService.createUser(new UserCreationDto("Ivan Vasya", "test_dummy",
                         "12345", "dummy@mail.ru"));

@@ -13,6 +13,7 @@ create function generateid()
     returns char(8) as
 '
     declare
+-- add prefix for server identify
         str text := ''0123456789abcdefghijklmnopqrstuvwxyz'';
         val bigint;
         id_ text;

@@ -13,8 +13,7 @@ import ru.gymanager.server.repository.UserRepository;
 import ru.gymanager.server.service.RoleService;
 import ru.gymanager.server.service.UserService;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -37,6 +36,7 @@ public class UserServiceImpl implements UserService, RoleService {
     @Override
     public UserEntity getUserByLogin(String login) {
         log.info("Get user with login: {}", login);
+        // TODO null check
         Optional<UserEntity> user = userRepository.findByLogin(login);
         if (user.isEmpty()) {
             return null;
@@ -48,9 +48,11 @@ public class UserServiceImpl implements UserService, RoleService {
     public UserEntity createUser(UserCreationDto userDto) {
         Optional<UserEntity> check = userRepository.findByLogin(userDto.getLogin());
         if (check.isPresent()) {
+            // TODO add warn message
             return check.get();
         }
         UserEntity user = userMapper.toUserEntity(userDto);
+        // TODO add fields check (not empty)
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         log.info("Create user with login: {}", user.getLogin());
         return userRepository.save(user);
@@ -64,6 +66,7 @@ public class UserServiceImpl implements UserService, RoleService {
 
     @Override
     public Role createRole(String roleName) {
+        // TODO empty check roleName
         Optional<Role> check = roleRepository.findByName(roleName);
         if (check.isPresent()) {
             log.info("Role already exists.");
@@ -77,6 +80,7 @@ public class UserServiceImpl implements UserService, RoleService {
     @Override
     public UserEntity setRoleToUser(String userLogin, String roleName) {
         UserEntity user = findUser(userLogin);
+        // TODO check user role existence
         log.info("USER FOUND WITH ID={}", user.getId());
         Role role = findRole(roleName);
         user.getRoles().add(role);
@@ -84,10 +88,11 @@ public class UserServiceImpl implements UserService, RoleService {
         return userRepository.save(user);
     }
 
+    //TODO rename to findAndValidate
     private UserEntity findUser(String login) {
         Optional<UserEntity> user = userRepository.findByLogin(login);
         if (user.isEmpty()) {
-            return null; //TODO 404 exception
+            return null; //TODO not found exception
         }
         return user.get();
     }
@@ -95,7 +100,7 @@ public class UserServiceImpl implements UserService, RoleService {
     private Role findRole(String roleName) {
         Optional<Role> role = roleRepository.findByName(roleName);
         if (role.isEmpty()) {
-            return null; //TODO 404 exception
+            return null; //TODO not found exception
         }
         return role.get();
     }

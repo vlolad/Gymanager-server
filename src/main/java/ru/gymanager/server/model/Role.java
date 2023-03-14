@@ -13,6 +13,8 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 public class Role {
+    // TODO enum default roles
+
     @Id
     @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.IdGenerator")
     @GeneratedValue(generator = "entity_id")

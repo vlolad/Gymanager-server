@@ -36,6 +36,7 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "_users_roles",
     joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            // TODO role list
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Collection<Role> roles = new ArrayList<>();
 }
