@@ -86,7 +86,6 @@ CREATE TABLE exercises
     id char(8) PRIMARY KEY DEFAULT generateid(),
     type_id char(8) REFERENCES dict_type_exercises(id),
     counting text
-
 );
 CREATE UNIQUE INDEX exercises_id on exercises (id);
 

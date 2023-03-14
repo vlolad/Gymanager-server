@@ -4,10 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.gymanager.server.exception.BadRequestException;
+import ru.gymanager.server.exception.NotFoundException;
 import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.model.Role;
 import ru.gymanager.server.model.UserEntity;
 import ru.gymanager.server.model.dto.UserCreationDto;
+import ru.gymanager.server.model.dto.UserUpdateDto;
 import ru.gymanager.server.repository.RoleRepository;
 import ru.gymanager.server.repository.UserRepository;
 import ru.gymanager.server.service.RoleService;
@@ -48,50 +52,76 @@ public class UserServiceImpl implements UserService, RoleService {
     public UserEntity createUser(UserCreationDto userDto) {
         Optional<UserEntity> check = userRepository.findByLogin(userDto.getLogin());
         if (check.isPresent()) {
-            // TODO add warn message
+            log.warn("User with login={} already exists", userDto.getLogin());
             return check.get();
         }
         UserEntity user = userMapper.toUserEntity(userDto);
-        // TODO add fields check (not empty)
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         log.info("Create user with login: {}", user.getLogin());
         return userRepository.save(user);
     }
 
     @Override
-    public List<Role> getAllRoles() {
-        log.warn("SERVICE: get all roles");
-        return roleRepository.findAll();
-    }
-
-    @Override
-    public Role createRole(String roleName) {
-        // TODO empty check roleName
-        Optional<Role> check = roleRepository.findByName(roleName);
-        if (check.isPresent()) {
-            log.info("Role already exists.");
-            return check.get();
+    @Transactional
+    public UserEntity updateUser(UserUpdateDto updateDto) {
+        UserEntity user = findAndValidateUser(updateDto.getId());
+        if (!updateDto.getName().isBlank()) {
+            user.setName(updateDto.getName());
         }
-        Role role = new Role(roleName);
-        log.warn("SERVICE: save new role: {}", role.getName());
-        return roleRepository.save(role);
+        if (!updateDto.getLogin().isBlank()) {
+            user.setLogin(updateDto.getLogin());
+        }
+        if (!updateDto.getPassword().isBlank()) {
+            log.warn("Update user password (id={})", updateDto.getId());
+            user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
+        }
+        if (!updateDto.getEmail().isBlank()) {
+            user.setEmail(updateDto.getEmail());
+        }
+
+        return user;
     }
 
     @Override
-    public UserEntity setRoleToUser(String userLogin, String roleName) {
-        UserEntity user = findAndValidateUser(userLogin);
-        // TODO check user role existence
-        log.info("USER FOUND WITH ID={}", user.getId());
-        Role role = findAndValidateRole(roleName);
-        user.getRoles().add(role);
-        log.warn("Set role {} to user (login={})", roleName, userLogin);
-        return userRepository.save(user);
+    public void deleteUser(String userId) {
+        findAndValidateUser(userId);
+        userRepository.deleteById(userId);
     }
 
-    private UserEntity findAndValidateUser(String login) {
-        Optional<UserEntity> user = userRepository.findByLogin(login);
+    @Override
+    @Transactional
+    public UserEntity setRoleToUser(String userId, String roleName) {
+        UserEntity user = findAndValidateUser(userId);
+        log.info("User found with id={}", user.getId());
+        Role role = findAndValidateRole(roleName);
+        if (user.getRoles().contains(role)) {
+            log.warn("User (id={}) already have role={}", userId, roleName);
+            throw new BadRequestException("This user already have this role");
+        }
+        user.getRoles().add(role);
+        log.warn("Set role {} to user (id={})", roleName, userId);
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public UserEntity deleteRoleFromUser(String userId, String roleName) {
+        UserEntity user = findAndValidateUser(userId);
+        log.info("User found with id={}", user.getId());
+        Role role = findAndValidateRole(roleName);
+        if (!user.getRoles().contains(role)) {
+            log.warn("User (id={}) don't have role={}", userId, roleName);
+            throw new BadRequestException("This user don't have this role");
+        }
+        user.getRoles().remove(role);
+        return user;
+    }
+
+    private UserEntity findAndValidateUser(String userId) {
+        Optional<UserEntity> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            return null; //TODO not found exception
+            log.warn("User with id={} not found", userId);
+            throw new NotFoundException("User with id " + userId + " not found.");
         }
         return user.get();
     }
@@ -99,7 +129,8 @@ public class UserServiceImpl implements UserService, RoleService {
     private Role findAndValidateRole(String roleName) {
         Optional<Role> role = roleRepository.findByName(roleName);
         if (role.isEmpty()) {
-            return null; //TODO not found exception
+            log.warn("Role with name={} not found", roleName);
+            throw new NotFoundException("Role with name " + roleName + " not found.");
         }
         return role.get();
     }

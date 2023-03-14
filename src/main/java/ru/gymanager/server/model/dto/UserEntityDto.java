@@ -4,20 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserCreationDto {
-    @NotNull
+@NoArgsConstructor
+public class UserEntityDto {
+    private String id;
     private String name;
-    @NotNull
     private String login;
-    @NotNull
-    private String password;
-    @NotNull
-    @Email
     private String email;
+    private List<String> roles;
 }
