@@ -1,26 +1,49 @@
 version: '3.8'
 
+networks:
+  cache_network:
+    driver: bridge
+    name: gymanager_network
+
 services:
 
-  main-server:
+  gymanager-app:
+    container_name: gymanager-app
     build:
+      context: ./
       dockerfile: Dockerfile
-    image: main-server
-    container_name: Training_server
+    networks:
+      cache_network:
+        aliases:
+          - gymanager_network
     ports:
-      - "8080:8080"
+      - "9090:8080"
+    expose:
+      - 9090
     depends_on:
-      - main-db
+      - gymanager-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/main-db
-
-  main-db:
-    #    health check
-    image: postgres:14-alpine
-    container_name: MainDB
+      SPRING_DATASOURCE_URL: jdbc:postgresql://gymanager-db:5432/gmr
+      SPRING_DATASOURCE_USERNAME: gmru
+      SPRING_DATASOURCE_PASSWORD: 1234567890
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_HIBERNATE_SHOW_SQL: false
+      JWT_SECRET: secret
+  gymanager-db:
+    container_name: gymanager-db
+    image: postgres:13.3
+    networks:
+      cache_network:
+        aliases:
+          - gymanager_network
+    environment:
+      POSTGRES_DB: gmr
+      POSTGRES_USER: gmru
+      POSTGRES_PASSWORD: 1234567890
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "6546:5432"
-    environment:
-      - POSTGRES_DB=main-db
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+    volumes:
+      - ./db/:/docker-entrypoint-initdb.d/
