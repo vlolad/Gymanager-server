@@ -38,4 +38,3 @@ Rel(exercises_service, db, "select/insert/update (sql)")
 
 
 @enduml
-```
