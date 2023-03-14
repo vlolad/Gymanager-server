@@ -7,22 +7,31 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.naming.AuthenticationException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice
-public class ErrorHandler {
+@ControllerAdvice
+public class ErrorHandler extends ResponseEntityExceptionHandler {
 
+    private Map<String, Object> buildResponseBody(Exception exc, String exceptionId) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("exception_id", exceptionId);
+        body.put("message", exc.getMessage());
+        body.put("exception", exc.getClass());
+        return body;
+    }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse badToken(MalformedJwtException exc) {
@@ -58,28 +67,16 @@ public class ErrorHandler {
         return new ErrorResponse("Current user not authenticated");
     }
 
-    @ExceptionHandler
-    public ErrorResponse handleNotFoundException(NotFoundException exc) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException exc) {
         log.warn("Handle NotFoundException: {}", exc.getMessage());
-        return new ErrorResponse(exc.getMessage(), exc);
+        return new ResponseEntity<>(buildResponseBody(exc, "404"), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
-    public ErrorResponse handleBadRequestException(BadRequestException exc) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<Object> handleBadRequestException(BadRequestException exc) {
         log.warn("Handle BadRequestException: {}", exc.getMessage());
-        return new ErrorResponse(exc.getMessage(), exc);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleSpringValidException(MethodArgumentNotValidException exc) {
-        log.warn("Handle MethodArgumentNotValidException (@Valid in controller): {}", exc.getMessage());
-        ErrorResponse error = new ErrorResponse("Some parameters didn't passed validation");
-        for (FieldError fieldError : exc.getBindingResult().getFieldErrors()) {
-            error.getViolations().add(
-                    new Violation(fieldError.getField(), fieldError.getDefaultMessage()));
-        }
-        return error;
+        return new ResponseEntity<>(buildResponseBody(exc, "400"), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler

@@ -89,6 +89,25 @@ public class UserServiceImpl implements UserService, RoleService {
     }
 
     @Override
+    public List<Role> getAllRoles() {
+        log.warn("SERVICE: get all roles");
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public Role createRole(String roleName) {
+        // TODO empty check roleName
+        Optional<Role> check = roleRepository.findByName(roleName);
+        if (check.isPresent()) {
+            log.info("Role already exists.");
+            return check.get();
+        }
+        Role role = new Role(roleName);
+        log.warn("SERVICE: save new role: {}", role.getName());
+        return roleRepository.save(role);
+    }
+
+    @Override
     @Transactional
     public UserEntity setRoleToUser(String userId, String roleName) {
         UserEntity user = findAndValidateUser(userId);
