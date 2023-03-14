@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
-@Table(name = "_users")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,7 +34,7 @@ public class UserEntity {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "_users_roles",
+    @JoinTable(name = "users_roles",
     joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             // TODO role list
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
