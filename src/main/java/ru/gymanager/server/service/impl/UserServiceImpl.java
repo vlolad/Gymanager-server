@@ -24,8 +24,6 @@ public class UserServiceImpl implements UserService, RoleService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public final String rolePrefix = "ROLE_";
-
     @Autowired
     public UserServiceImpl(RoleRepository roleRepository, UserRepository userRepository, UserMapper userMapper,
                            PasswordEncoder passwordEncoder) {
@@ -69,12 +67,12 @@ public class UserServiceImpl implements UserService, RoleService {
     @Override
     public Role createRole(String roleName) {
         // TODO empty check roleName
-        Optional<Role> check = roleRepository.findByName(rolePrefix + roleName);
+        Optional<Role> check = roleRepository.findByName(roleName);
         if (check.isPresent()) {
             log.info("Role already exists.");
             return check.get();
         }
-        Role role = new Role(rolePrefix + roleName);
+        Role role = new Role(roleName);
         log.warn("SERVICE: save new role: {}", role.getName());
         return roleRepository.save(role);
     }
@@ -84,7 +82,7 @@ public class UserServiceImpl implements UserService, RoleService {
         UserEntity user = findAndValidateUser(userLogin);
         // TODO check user role existence
         log.info("USER FOUND WITH ID={}", user.getId());
-        Role role = findAndValidateRole(rolePrefix + roleName);
+        Role role = findAndValidateRole(roleName);
         user.getRoles().add(role);
         log.warn("Set role {} to user (login={})", roleName, userLogin);
         return userRepository.save(user);
