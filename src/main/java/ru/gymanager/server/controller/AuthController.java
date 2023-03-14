@@ -18,7 +18,6 @@ import javax.validation.Valid;
 
 @RestController
 @Slf4j
-//@CrossOrigin - #TODO нужна ли эта аннотация на данном этапе?
 public class AuthController {
 
     private final JwtTokenUtil jwtTokenUtil;
@@ -29,7 +28,7 @@ public class AuthController {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth")
     public ResponseEntity<?> createAuthToken(@RequestBody @Valid AuthRequest authRequest) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getLogin(), authRequest.getPassword()));
