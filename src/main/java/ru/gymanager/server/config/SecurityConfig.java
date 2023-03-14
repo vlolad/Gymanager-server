@@ -35,6 +35,7 @@ public class SecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/hello").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);

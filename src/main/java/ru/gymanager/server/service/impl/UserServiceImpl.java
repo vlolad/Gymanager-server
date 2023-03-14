@@ -24,6 +24,8 @@ public class UserServiceImpl implements UserService, RoleService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
+    public final String rolePrefix = "ROLE_";
+
     @Autowired
     public UserServiceImpl(RoleRepository roleRepository, UserRepository userRepository, UserMapper userMapper,
                            PasswordEncoder passwordEncoder) {
@@ -67,29 +69,28 @@ public class UserServiceImpl implements UserService, RoleService {
     @Override
     public Role createRole(String roleName) {
         // TODO empty check roleName
-        Optional<Role> check = roleRepository.findByName(roleName);
+        Optional<Role> check = roleRepository.findByName(rolePrefix + roleName);
         if (check.isPresent()) {
             log.info("Role already exists.");
             return check.get();
         }
-        Role role = new Role(roleName);
+        Role role = new Role(rolePrefix + roleName);
         log.warn("SERVICE: save new role: {}", role.getName());
         return roleRepository.save(role);
     }
 
     @Override
     public UserEntity setRoleToUser(String userLogin, String roleName) {
-        UserEntity user = findUser(userLogin);
+        UserEntity user = findAndValidateUser(userLogin);
         // TODO check user role existence
         log.info("USER FOUND WITH ID={}", user.getId());
-        Role role = findRole(roleName);
+        Role role = findAndValidateRole(rolePrefix + roleName);
         user.getRoles().add(role);
         log.warn("Set role {} to user (login={})", roleName, userLogin);
         return userRepository.save(user);
     }
 
-    //TODO rename to findAndValidate
-    private UserEntity findUser(String login) {
+    private UserEntity findAndValidateUser(String login) {
         Optional<UserEntity> user = userRepository.findByLogin(login);
         if (user.isEmpty()) {
             return null; //TODO not found exception
@@ -97,7 +98,7 @@ public class UserServiceImpl implements UserService, RoleService {
         return user.get();
     }
 
-    private Role findRole(String roleName) {
+    private Role findAndValidateRole(String roleName) {
         Optional<Role> role = roleRepository.findByName(roleName);
         if (role.isEmpty()) {
             return null; //TODO not found exception
