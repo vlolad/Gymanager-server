@@ -24,8 +24,8 @@ services:
       - gymanager-db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://gymanager-db:5432/gmr
-      SPRING_DATASOURCE_USERNAME: gmru
-      SPRING_DATASOURCE_PASSWORD: 1234567890
+      SPRING_DATASOURCE_USERNAME:
+      SPRING_DATASOURCE_PASSWORD:
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
