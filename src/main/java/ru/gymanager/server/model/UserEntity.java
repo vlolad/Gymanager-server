@@ -24,13 +24,13 @@ public class UserEntity {
     @Column(name="login", length = 32, nullable = false, unique = true)
     private String login;
 
-    @Column(name = "name", length = 32, nullable = false)
+    @Column(name = "firstName", length = 32, nullable = false)
     private String firstName;
 
-    @Column(name = "name", length = 32)
+    @Column(name = "middleName", length = 32)
     private String middleName;
 
-    @Column(name = "name", length = 32)
+    @Column(name = "lastName", length = 32)
     private String lastName;
 
     @Column(name = "email", length = 128, nullable = false, unique = true)
