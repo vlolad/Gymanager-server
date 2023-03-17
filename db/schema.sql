@@ -61,7 +61,7 @@ CREATE TABLE gm_roles(
 
 CREATE TABLE gm_users_roles(
     user_id char(10) REFERENCES gm_users (id) NOT NULL,
-    role_id char(10) REFERENCES roles (id) NOT NULL,
+    role_id char(10) REFERENCES gm_roles (id) NOT NULL,
     creation_date timestamp not null default now(),
     CONSTRAINT gm_pk_users_roles PRIMARY KEY (user_id, role_id)
 );
@@ -90,7 +90,7 @@ CREATE TABLE gm_trainer_clients(
 CREATE TABLE gm_workouts(
     id              char(10) PRIMARY KEY DEFAULT generateid(),
     trainer_user_id char(10) NOT NULL REFERENCES gm_users (id),
-    client_id       char(10) NOT NULL REFERENCES clients (id),
+    client_id       char(10) NOT NULL REFERENCES gm_clients (id),
     start_date      timestamp,
     description     text
 );
