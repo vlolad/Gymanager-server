@@ -63,12 +63,12 @@ CREATE TABLE gm_users_roles(
     user_id char(10) REFERENCES gm_users (id) NOT NULL,
     role_id char(10) REFERENCES gm_roles (id) NOT NULL,
     creation_date timestamp not null default now(),
-    CONSTRAINT gm_pk_users_roles PRIMARY KEY (user_id, role_id)
+    CONSTRAINT gm_pk_users_roles UNIQUE (user_id, role_id)
 );
 
 CREATE TABLE gm_clients(
     id char(10) PRIMARY KEY DEFAULT generateid(),
-    creation_datetimestamp not null default now(),
+    creation_date timestamp not null default now(),
     first_name    varchar(32) NOT NULL,
     middle_name   varchar(32),
     last_name     varchar(32),
@@ -82,7 +82,7 @@ CREATE TABLE gm_trainer_clients(
     creation_date   timestamp not null default now(),
     trainer_user_id char(10) NOT NULL REFERENCES gm_users(id),
     client_id       char(10) NOT NULL REFERENCES gm_clients(id),
-    CONSTRAINT gm_pk_trainer_client PRIMARY KEY (trainer_user_id, client_id)
+    CONSTRAINT gm_pk_trainer_client UNIQUE (trainer_user_id, client_id)
 );
 
 -- Таблица с инфой о тренировке
@@ -118,7 +118,7 @@ CREATE INDEX gm_ind_dict_exercise_name on gm_dict_exercises(caption);
 CREATE TABLE gm_workout_exercises(
     id          char(10) PRIMARY KEY DEFAULT generateid(),
     workout_id  char(10) NOT NULL REFERENCES gm_workouts(id),
-    type_id     char(10) NOT NULL REFERENCES gm_dict_exercise(id),
+    type_id     char(10) NOT NULL REFERENCES gm_dict_exercises(id),
     note        text
 );
 create index gm_ind_workout_exercises_wrk_id on gm_workout_exercises(workout_id);
