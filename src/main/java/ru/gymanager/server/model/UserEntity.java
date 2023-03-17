@@ -16,7 +16,7 @@ import java.util.HashSet;
 @NoArgsConstructor
 public class UserEntity {
     @Id
-    @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.IdGenerator")
+    @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.EntityIdGenerator")
     @GeneratedValue(generator = "entity_id")
     @Column(name = "id")
     private String id;
