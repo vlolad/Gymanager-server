@@ -14,12 +14,10 @@ import ru.gymanager.server.service.UserService;
 @Slf4j
 public class UserController {
 
-    private final UserRepository repo;
     private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository repo, UserService userService) {
-        this.repo = repo;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -28,8 +26,4 @@ public class UserController {
         return userService.getUserByLogin(login);
     }
 
-    @GetMapping("/user/info")
-    public UserInfoDto getUserInfo(@RequestParam String login) {
-        return repo.findAllByLogin(login);
-    }
 }
