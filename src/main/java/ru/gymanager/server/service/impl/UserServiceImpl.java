@@ -1,13 +1,16 @@
 package ru.gymanager.server.service.impl;
 
+import javax.xml.bind.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.model.Role;
 import ru.gymanager.server.model.UserEntity;
-import ru.gymanager.server.model.dto.UserCreationDto;
+import ru.gymanager.server.dto.UserCreationDto;
 import ru.gymanager.server.repository.RoleRepository;
 import ru.gymanager.server.repository.UserRepository;
 import ru.gymanager.server.service.RoleService;
@@ -17,6 +20,7 @@ import java.util.*;
 
 @Service
 @Slf4j
+// TODO сделать отедльную реализацию RoleService
 public class UserServiceImpl implements UserService, RoleService {
 
     private final RoleRepository roleRepository;
@@ -35,63 +39,59 @@ public class UserServiceImpl implements UserService, RoleService {
 
     @Override
     public UserEntity getUserByLogin(String login) {
-        log.info("Get user with login: {}", login);
-        // TODO null check
-        Optional<UserEntity> user = userRepository.findByLogin(login);
-        if (user.isEmpty()) {
+        if (StringUtils.isBlank(login)) {
             return null;
         }
-        return user.get();
+        Optional<UserEntity> user = userRepository.findByLogin(login);
+        return user.orElse(null);
     }
 
     @Override
     public UserEntity createUser(UserCreationDto userDto) {
         Optional<UserEntity> check = userRepository.findByLogin(userDto.getLogin());
         if (check.isPresent()) {
-            // TODO add warn message
             return check.get();
         }
         UserEntity user = userMapper.toUserEntity(userDto);
-        // TODO add fields check (not empty)
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        log.info("Create user with login: {}", user.getLogin());
+        log.info("User created with login: {}", user.getLogin());
         return userRepository.save(user);
     }
 
     @Override
     public List<Role> getAllRoles() {
-        log.warn("SERVICE: get all roles");
         return roleRepository.findAll();
     }
 
     @Override
-    public Role createRole(String roleName) {
-        // TODO empty check roleName
+    public Role createRole(String roleName) throws ValidationException {
+        if (StringUtils.isBlank(roleName)) {
+            throw new ValidationException("Role name is empty!");
+        }
         Optional<Role> check = roleRepository.findByName(roleName);
         if (check.isPresent()) {
-            log.info("Role already exists.");
             return check.get();
         }
         Role role = new Role(roleName);
-        log.warn("SERVICE: save new role: {}", role.getName());
         return roleRepository.save(role);
     }
 
     @Override
-    public UserEntity setRoleToUser(String userLogin, String roleName) {
+    public void setRoleToUser(String userLogin, String roleName) {
         UserEntity user = findAndValidateUser(userLogin);
-        // TODO check user role existence
-        log.info("USER FOUND WITH ID={}", user.getId());
+        if (user.getRoles().stream().anyMatch(role -> StringUtils.equals(roleName, role.getName()))) {
+            return;
+        }
+
         Role role = findAndValidateRole(roleName);
         user.getRoles().add(role);
         log.warn("Set role {} to user (login={})", roleName, userLogin);
-        return userRepository.save(user);
     }
 
     private UserEntity findAndValidateUser(String login) {
         Optional<UserEntity> user = userRepository.findByLogin(login);
         if (user.isEmpty()) {
-            return null; //TODO not found exception
+            throw new NotFoundException("User with login " + login + " not found!");
         }
         return user.get();
     }
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService, RoleService {
     private Role findAndValidateRole(String roleName) {
         Optional<Role> role = roleRepository.findByName(roleName);
         if (role.isEmpty()) {
-            return null; //TODO not found exception
+            throw new NotFoundException("Role with name " + roleName + " not found!");
         }
         return role.get();
     }

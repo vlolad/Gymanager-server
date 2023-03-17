@@ -1,4 +1,4 @@
-package ru.gymanager.server.security.model;
+package ru.gymanager.server.controller.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

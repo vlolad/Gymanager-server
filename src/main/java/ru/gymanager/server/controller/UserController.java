@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.gymanager.server.model.UserEntity;
-import ru.gymanager.server.model.UserInfoDto;
+import ru.gymanager.server.dto.UserInfoDto;
 import ru.gymanager.server.repository.UserRepository;
 import ru.gymanager.server.service.UserService;
 

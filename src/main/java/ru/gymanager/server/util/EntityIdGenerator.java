@@ -12,13 +12,12 @@ import java.sql.Statement;
 
 //Генерирует id любой сущности с помощью функции БД
 //Author: https://github.com/PavelProjects
-public class IdGenerator implements IdentifierGenerator {
+public class EntityIdGenerator implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor,
                                  Object o) throws HibernateException {
-        Connection connection = sharedSessionContractImplementor.connection();
-        try {
+        try (Connection connection = sharedSessionContractImplementor.connection()) {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select generateid() as new_id");
             if (rs.next()) {

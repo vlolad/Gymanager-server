@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.gymanager.server.security.JwtTokenUtil;
-import ru.gymanager.server.security.model.AuthRequest;
-import ru.gymanager.server.security.model.AuthResponse;
+import ru.gymanager.server.util.JwtTokenUtil;
+import ru.gymanager.server.controller.model.AuthRequest;
+import ru.gymanager.server.controller.model.AuthResponse;
 
 import javax.validation.Valid;
 

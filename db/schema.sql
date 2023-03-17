@@ -1,16 +1,22 @@
-DROP FUNCTION IF EXISTS generateid CASCADE;
-DROP TABLE IF EXISTS _users_roles CASCADE;
-DROP TABLE IF EXISTS roles CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-DROP SEQUENCE IF EXISTS main_id_sequence;
-
 BEGIN;
+--Стоит добавить в каждую таблицу:
+-- Когда создано
+-- Кем создано
+-- Когда изменено
+-- Кем изменено
+
+
+-- СОХРАНЯЕМ ОБЩИЙ СТИЛЬ
+-- Любая таблица, индекс, счетчик начинаются с gm_
+-- Не плодим лишние индексы
+-- Добавляем пояснения, что за таблицы
+
 
 -- Author: https://github.com/PavelProjects
-CREATE SEQUENCE main_id_sequence;
+CREATE SEQUENCE gm_main_id_sequence;
 
 create function generateid()
-    returns char(8) as
+    returns char(10) as
 '
     declare
 -- add prefix for server identify
@@ -18,8 +24,9 @@ create function generateid()
         val bigint;
         id_ text;
         mod int;
+        server_id text := ''01'';
     begin
-        val := nextval(''main_id_sequence'');
+        val := nextval(''gm_main_id_sequence'');
         id_ := '''';
         while (length(id_) < 8)
             loop
@@ -27,67 +34,93 @@ create function generateid()
                 id_ := substring(str, mod + 1, 1) || id_;
                 val = val / 36;
             end loop;
-        return id_;
+        return server_id || id_;
         return ''null'';
     end;
 '
     language plpgsql;
 
-CREATE TABLE users
-(
-    id       char(8) PRIMARY KEY DEFAULT generateid(),
-    name     varchar(32)  NOT NULL,
-    login    varchar(32)  NOT NULL UNIQUE,
-    email    varchar(128) NOT NULL UNIQUE,
-    password varchar(128) NOT NULL
+-- Таблица юзеров. На первых этапах - тренера
+CREATE TABLE gm_users (
+    id            char(10) PRIMARY KEY DEFAULT generateid(),
+    creation_date timestamp not null default now(),
+--    Возможно нужно добавить создание индекса для логина -> ускорит поиск
+    login         varchar(32)  NOT NULL UNIQUE,
+    first_name    varchar(32)  NOT NULL,
+    middle_name   varchar(32),
+    last_name     varchar(32),
+    email         varchar(128) NOT NULL UNIQUE,
+    phone         char(11) NOT NULL UNIQUE,
+    password      varchar(128) NOT NULL
 );
 
-CREATE TABLE roles
-(
-    id   char(8) PRIMARY KEY DEFAULT generateid(),
+CREATE TABLE gm_roles(
+    id   char(10) PRIMARY KEY DEFAULT generateid(),
     name varchar(32) NOT NULL
 );
 
-CREATE TABLE users_roles
-(
-    user_id char(8) REFERENCES users (id) NOT NULL,
-    role_id char(8) REFERENCES roles (id) NOT NULL,
-    CONSTRAINT pk_users_roles PRIMARY KEY (user_id, role_id)
+CREATE TABLE gm_users_roles(
+    user_id char(10) REFERENCES gm_users (id) NOT NULL,
+    role_id char(10) REFERENCES roles (id) NOT NULL,
+    creation_date timestamp not null default now(),
+    CONSTRAINT gm_pk_users_roles PRIMARY KEY (user_id, role_id)
 );
 
-CREATE TABLE clients
-(
-    id char(8) PRIMARY KEY DEFAULT generateid(),
-    name varchar(64) NOT NULL,
-    description text,
-    next_workout timestamp,
-    trainer_id char(8) REFERENCES users (id) NOT NULL
-);
-CREATE UNIQUE INDEX clients_name on clients (name);
-
-CREATE TABLE workouts
-(
-    id char(8) PRIMARY KEY DEFAULT generateid(),
-    client_id char(8) NOT NULL REFERENCES clients (id),
-    date timestamp,
-    description text
-);
-CREATE UNIQUE INDEX workouts_clients on workouts (client_id);
-
-CREATE TABLE dict_type_exercises
-(
-    id char(8) PRIMARY KEY DEFAULT generateid(),
-    name varchar(64) NOT NULL,
-    description varchar(200)
+CREATE TABLE gm_clients(
+    id char(10) PRIMARY KEY DEFAULT generateid(),
+    creation_datetimestamp not null default now(),
+    first_name    varchar(32) NOT NULL,
+    middle_name   varchar(32),
+    last_name     varchar(32),
+    phone         char(11) not null UNIQUE,
+    description   text
 );
 
-CREATE TABLE exercises
-(
-    id char(8) PRIMARY KEY DEFAULT generateid(),
-    type_id char(8) REFERENCES dict_type_exercises(id),
-    counting text
-
+-- Таблица связи тренера и клиента. Клиент может ходить к разным тренерам.
+CREATE TABLE gm_trainer_clients(
+    id              char(10) PRIMARY KEY DEFAULT generateid(),
+    creation_date   timestamp not null default now(),
+    trainer_user_id char(10) NOT NULL REFERENCES gm_users(id),
+    client_id       char(10) NOT NULL REFERENCES gm_clients(id),
+    CONSTRAINT gm_pk_trainer_client PRIMARY KEY (trainer_user_id, client_id)
 );
-CREATE UNIQUE INDEX exercises_id on exercises (id);
+
+-- Таблица с инфой о тренировке
+-- Тренировка может быть создана на будущее
+CREATE TABLE gm_workouts(
+    id              char(10) PRIMARY KEY DEFAULT generateid(),
+    trainer_user_id char(10) NOT NULL REFERENCES gm_users (id),
+    client_id       char(10) NOT NULL REFERENCES clients (id),
+    start_date      timestamp,
+    description     text
+);
+CREATE INDEX gm_ind_workouts_clients on gm_workouts (client_id);
+
+-- Справочник единиц измерения (кол-во, секунды и тп)
+create table gm_dict_measures(
+    id char(10) PRIMARY KEY DEFAULT generateid(),
+    system_name varchar(64) NOT NULL,
+    caption     varchar(64) not null,
+    units       varchar(32)
+);
+
+-- Справочник упражнений
+CREATE TABLE gm_dict_exercises(
+    id char(10) PRIMARY KEY DEFAULT generateid(),
+    system_name varchar(64) NOT NULL unique,
+    caption     varchar(64) not null,
+    description varchar(200),
+    measure_type_id char(10) NOT NULL REFERENCES gm_dict_measures(id)
+);
+CREATE INDEX gm_ind_dict_exercise_name on gm_dict_exercises(caption);
+
+-- Связь упражнения и тренировки
+CREATE TABLE gm_workout_exercises(
+    id          char(10) PRIMARY KEY DEFAULT generateid(),
+    workout_id  char(10) NOT NULL REFERENCES gm_workouts(id),
+    type_id     char(10) NOT NULL REFERENCES gm_dict_exercise(id),
+    note        text
+);
+create index gm_ind_workout_exercises_wrk_id on gm_workout_exercises(workout_id);
 
 COMMIT;

@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 @Entity
-@Table(name = "users")
+@Table(name = "gm_users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,20 +21,29 @@ public class UserEntity {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "name", length = 32, nullable = false)
-    private String name;
-
     @Column(name="login", length = 32, nullable = false, unique = true)
     private String login;
 
+    @Column(name = "name", length = 32, nullable = false)
+    private String firstName;
+
+    @Column(name = "name", length = 32)
+    private String middleName;
+
+    @Column(name = "name", length = 32)
+    private String lastName;
+
     @Column(name = "email", length = 128, nullable = false, unique = true)
     private String email;
+
+    @Column(name = "phone", length = 11, nullable = false, unique = true)
+    private String phone;
 
     @Column(name = "password", length = 128, nullable = false)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_roles",
+    @JoinTable(name = "gm_users_roles",
     joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Collection<Role> roles = new HashSet<>();

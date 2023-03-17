@@ -2,7 +2,7 @@ package ru.gymanager.server.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.gymanager.server.model.UserEntity;
-import ru.gymanager.server.model.UserInfoDto;
+import ru.gymanager.server.dto.UserInfoDto;
 
 import java.util.Optional;
 

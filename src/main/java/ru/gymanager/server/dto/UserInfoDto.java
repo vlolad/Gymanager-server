@@ -1,4 +1,4 @@
-package ru.gymanager.server.model;
+package ru.gymanager.server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
