@@ -1,12 +1,22 @@
-# КАК НАДО ПИСАТЬ КОД:
-- Не добавлять неуместные логи (service get roles, role already exists and etc.)
-- Что стоит логировать:
-- * Создание объекта
-- * Удаление объекта
-- * Изменение объекта
-- * Предупреждения о попытках доступа к закрытой для юзера информации
-- Метод добавления связи (setRole например) НЕ ДОЛЖЕН возвращать объект
-- Метод создания объекта ДОЛЖЕН возвращать созданный объект
-- Добавлять комменты на неочевидные функции и объекты
-- Не выкидывать ошибки в методах поиска, если объект не был найден
-- Делать проверки на null для входных данных, если эти данные потом преобразуются
+# Gym manager
+Server-side application of project "Gym Manager".
+
+### Description
+Application for personal trainers to record client training information.
+
+**Client-side app:** WIP, coming soon
+
+### Stack
+Java 11, Spring (MVC, Data, Security), JWT, PostgreSQL, Docker, Swagger
+
+## Features:
+- Authorization with Spring Security and JWT
+- Admin and user roles
+- Storage of clients, workouts and exercises information
+- REST API
+
+## API
+Coming soon...
+
+## Database structure
+Coming soon.....

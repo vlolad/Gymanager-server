@@ -1,11 +1,9 @@
 package ru.gymanager.server.model;
 
 import java.sql.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.List;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,13 +24,13 @@ public class ClientEntity {
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
 
-    @Column(name = "firstName", length = 32, nullable = false)
+    @Column(name = "first_Name", length = 32, nullable = false)
     private String firstName;
 
-    @Column(name = "middleName", length = 32)
+    @Column(name = "middle_Name", length = 32)
     private String middleName;
 
-    @Column(name = "lastName", length = 32)
+    @Column(name = "last_Name", length = 32)
     private String lastName;
 
     @Column(name = "phone", length = 11, nullable = false, unique = true)
@@ -40,4 +38,7 @@ public class ClientEntity {
 
     @Column(name = "description", length = 1024)
     private String description;
+
+    @Transient
+    private List<WorkoutEntity> workouts;
 }

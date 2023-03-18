@@ -5,18 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ClientDto {
+public class ExerciseTypeDto {
     private String id;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String phone;
+    private String systemName;
+    private String caption;
     private String description;
-    private List<WorkoutShortDto> workouts;
+    private MeasureTypeDto measure;
 }

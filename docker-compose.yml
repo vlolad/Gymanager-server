@@ -31,6 +31,7 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_JPA_HIBERNATE_SHOW_SQL: false
       JWT_SECRET: secret
+
   gymanager-db:
     container_name: gymanager-db
     image: postgres:13.3

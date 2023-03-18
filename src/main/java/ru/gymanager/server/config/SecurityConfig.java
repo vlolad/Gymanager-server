@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .antMatchers("/actuator/**").permitAll() //TODO close access
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/v3/api-docs/**").permitAll()
+                .antMatchers("/bus/v3/api-docs/**").permitAll()
 //                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()

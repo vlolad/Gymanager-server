@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService, RoleService {
         return userRepository.save(user);
     }
 
-    // TODO обновление пароля, телефон и почты должно быть отдельным методом
     @Override
     @Transactional
     public UserEntity updateUser(UserInfoDto updateDto) {
