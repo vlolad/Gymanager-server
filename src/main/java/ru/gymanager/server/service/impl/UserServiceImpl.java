@@ -7,10 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+import ru.gymanager.server.exception.BadRequestException;
+import ru.gymanager.server.exception.NotFoundException;
 import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.model.Role;
 import ru.gymanager.server.model.UserEntity;
 import ru.gymanager.server.dto.UserCreationDto;
+import ru.gymanager.server.model.dto.UserCreationDto;
+import ru.gymanager.server.model.dto.UserUpdateDto;
 import ru.gymanager.server.repository.RoleRepository;
 import ru.gymanager.server.repository.UserRepository;
 import ru.gymanager.server.service.RoleService;
@@ -58,6 +63,33 @@ public class UserServiceImpl implements UserService, RoleService {
     }
 
     @Override
+    @Transactional
+    public UserEntity updateUser(UserUpdateDto updateDto) {
+        UserEntity user = findAndValidateUser(updateDto.getId());
+        if (!updateDto.getName().isBlank()) {
+            user.setName(updateDto.getName());
+        }
+        if (!updateDto.getLogin().isBlank()) {
+            user.setLogin(updateDto.getLogin());
+        }
+        if (!updateDto.getPassword().isBlank()) {
+            log.warn("Update user password (id={})", updateDto.getId());
+            user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
+        }
+        if (!updateDto.getEmail().isBlank()) {
+            user.setEmail(updateDto.getEmail());
+        }
+
+        return user;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        findAndValidateUser(userId);
+        userRepository.deleteById(userId);
+    }
+
+    @Override
     public List<Role> getAllRoles() {
         return roleRepository.findAll();
     }
@@ -87,8 +119,22 @@ public class UserServiceImpl implements UserService, RoleService {
         log.warn("Set role {} to user (login={})", roleName, userLogin);
     }
 
-    private UserEntity findAndValidateUser(String login) {
-        Optional<UserEntity> user = userRepository.findByLogin(login);
+    @Override
+    @Transactional
+    public UserEntity deleteRoleFromUser(String userId, String roleName) {
+        UserEntity user = findAndValidateUser(userId);
+        log.info("User found with id={}", user.getId());
+        Role role = findAndValidateRole(roleName);
+        if (!user.getRoles().contains(role)) {
+            log.warn("User (id={}) don't have role={}", userId, roleName);
+            throw new BadRequestException("This user don't have this role");
+        }
+        user.getRoles().remove(role);
+        return user;
+    }
+
+    private UserEntity findAndValidateUser(String userId) {
+        Optional<UserEntity> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             throw new NotFoundException("User with login " + login + " not found!");
         }

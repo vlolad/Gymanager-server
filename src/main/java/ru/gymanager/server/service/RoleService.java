@@ -13,4 +13,5 @@ public interface RoleService {
 
     void setRoleToUser(String userLogin, String roleName);
 
+    UserEntity deleteRoleFromUser(String userId, String roleName);
 }
