@@ -10,14 +10,12 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreationDto {
+public class UserUpdateDto {
     @NotNull
+    private String id;
     private String name;
-    @NotNull
     private String login;
-    @NotNull
     private String password;
-    @NotNull
     @Email
     private String email;
 }
