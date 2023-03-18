@@ -44,7 +44,7 @@ public class ServerApplication {
                 "user@null.org",
                 "12223334455"
             ));
-            roleService.setRoleToUser("test_dummy", DefaultRoles.USER.name());
+            roleService.setRoleToUser("test_user", DefaultRoles.USER.name());
         };
     }
 }
