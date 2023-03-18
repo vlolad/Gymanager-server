@@ -5,8 +5,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import ru.gymanager.server.model.Role.DefaultRoles;
 import ru.gymanager.server.model.UserEntity;
-import ru.gymanager.server.model.dto.UserCreationDto;
+import ru.gymanager.server.dto.UserCreationDto;
 import ru.gymanager.server.service.RoleService;
 import ru.gymanager.server.service.UserService;
 
@@ -22,21 +23,28 @@ public class ServerApplication {
     CommandLineRunner run(UserService userService, RoleService roleService) {
         return args -> {
             if (roleService.getAllRoles().isEmpty()) {
-                roleService.createRole("ADMIN");
-                roleService.createRole("USER");
+                roleService.createRole(DefaultRoles.ADMIN.name());
+                roleService.createRole(DefaultRoles.USER.name());
             }
-            if (userService.getUserByLogin("test_admin") == null) {
-                UserEntity user = userService.createUser(new UserCreationDto("Admin Adminovich", "test_admin",
-                        "qwerty", "admin@null.org"));
-                log.info("TEST USER CREATED WITH ID={}", user.getId());
-                roleService.setRoleToUser("test_admin", "ADMIN");
-            }
+            UserEntity user = userService.createUser(
+                new UserCreationDto(
+                    "test_admin",
+                    "qwerty",
+                    "Admin Adminovich",
+                    "admin@null.org",
+                    "88889990011"
+                )
+            );
+            roleService.setRoleToUser(user.getLogin(), DefaultRoles.ADMIN.name());
             // TODO test login to constant
-            if (userService.getUserByLogin("test_dummy") == null) {
-                userService.createUser(new UserCreationDto("Ivan Vasya", "test_dummy",
-                        "12345", "dummy@mail.ru"));
-                roleService.setRoleToUser("test_dummy", "USER");
-            }
+            userService.createUser(new UserCreationDto(
+                "test_user",
+                "qwerty",
+                "User",
+                "user@null.org",
+                "12223334455"
+            ));
+            roleService.setRoleToUser("test_user", DefaultRoles.USER.name());
         };
     }
 }

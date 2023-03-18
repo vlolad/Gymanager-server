@@ -1,4 +1,4 @@
-package ru.gymanager.server.security;
+package ru.gymanager.server.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -71,16 +71,17 @@ public class JwtTokenUtil implements Serializable {
     //generate token for user
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+//        claims.put("gm_roles", userDetails.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
     private String doGenerateToken(Map<String, Object> claims, String subject) {
-
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
+        return Jwts.builder().setClaims(claims).setSubject(subject)
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
+            .signWith(SignatureAlgorithm.HS512, secret)
+            .compact();
     }
 
     public UserDetails validateToken(String token) {

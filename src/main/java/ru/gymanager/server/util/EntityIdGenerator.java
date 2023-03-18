@@ -12,7 +12,7 @@ import java.sql.Statement;
 
 //Генерирует id любой сущности с помощью функции БД
 //Author: https://github.com/PavelProjects
-public class IdGenerator implements IdentifierGenerator {
+public class EntityIdGenerator implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor,

@@ -8,15 +8,13 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "gm_roles")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Role {
-    // TODO enum default roles
-
     @Id
-    @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.IdGenerator")
+    @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.EntityIdGenerator")
     @GeneratedValue(generator = "entity_id")
     @Column(name = "id")
     private String id;
@@ -26,5 +24,11 @@ public class Role {
 
     public Role(String name) {
         this.name = name;
+    }
+
+    // todo vlados
+    public enum DefaultRoles {
+        ADMIN,
+        USER
     }
 }
