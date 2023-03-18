@@ -24,13 +24,14 @@ services:
       - gymanager-db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://gymanager-db:5432/gmr
-      SPRING_DATASOURCE_USERNAME: ${DB_USER_NAME}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_JPA_HIBERNATE_SHOW_SQL: false
       JWT_SECRET: secret
+
   gymanager-db:
     container_name: gymanager-db
     image: postgres:13.3
@@ -40,8 +41,8 @@ services:
           - gymanager_network
     environment:
       POSTGRES_DB: gmr
-      POSTGRES_USER: ${DB_USER_NAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
 #      вынести наружу
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:

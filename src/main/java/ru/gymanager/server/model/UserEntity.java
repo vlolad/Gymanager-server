@@ -22,6 +22,7 @@ public class UserEntity {
     @Column(name = "id")
     private String id;
 
+    @Transient
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
 

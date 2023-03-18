@@ -5,18 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClientDto {
+public class WorkoutShortDto {
     private String id;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String phone;
+    private LocalDateTime startDate;
     private String description;
-    private List<WorkoutShortDto> workouts;
 }

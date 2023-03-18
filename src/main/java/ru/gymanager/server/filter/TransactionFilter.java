@@ -15,13 +15,14 @@ import org.springframework.stereotype.Component;
 
 /**
  * Логирует запрос и ответ на сервер
- * TODO добавить UUID для всех логов. Генерироваться id должен здесь.
+ * TODO добавить UUID для логов.
  */
 
 @Slf4j
 @Component
 public class TransactionFilter implements Filter {
-    private static final String LOG_TAG = TransactionFilter.class.getName();
+    private static final String LOG_REQUEST = "REQUEST ({}) [{}]::{}";
+    private static final String LOG_RESPONSE = "RESPONSE ({}) FINISHED";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
@@ -31,22 +32,16 @@ public class TransactionFilter implements Filter {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info(LOG_TAG,
-            String.format(
-                "REQUEST (%s) [%s]::%s",
+        log.info(LOG_REQUEST,
                 auth.getName(),
                 request.getMethod(),
                 request.getServletPath()
-            )
         );
 
         filterChain.doFilter(request, response);
 
-        log.info(LOG_TAG,
-            String.format(
-                "RESPONSE (%s) FINISHED",
+        log.info(LOG_RESPONSE,
                 auth.getName()
-            )
         );
     }
 }
