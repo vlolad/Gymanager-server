@@ -17,7 +17,8 @@ public class EntityIdGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor,
                                  Object o) throws HibernateException {
-        try (Connection connection = sharedSessionContractImplementor.connection()) {
+        Connection connection = sharedSessionContractImplementor.connection();
+        try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select generateid() as new_id");
             if (rs.next()) {
