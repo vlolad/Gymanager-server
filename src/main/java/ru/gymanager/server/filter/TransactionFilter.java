@@ -44,9 +44,8 @@ public class TransactionFilter implements Filter {
 
         log.info(LOG_TAG,
             String.format(
-                "RESPONSE (%s) %s",
-                auth.getName(),
-                request.getContentType()
+                "RESPONSE (%s) FINISHED",
+                auth.getName()
             )
         );
     }

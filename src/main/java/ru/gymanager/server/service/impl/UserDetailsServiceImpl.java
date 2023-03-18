@@ -33,12 +33,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<UserEntity> userData = userRepository.findByLogin(username);
         if (userData.isPresent()) {
             UserEntity user = userData.get();
-            log.warn("AUTH: load user details for login={}", user.getLogin());
             Set<SimpleGrantedAuthority> authorities = new HashSet<>();
             user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
             return new User(user.getLogin(), user.getPassword(), authorities);
         } else {
-            return null; //TODO username not found exception
+            return null;
         }
     }
 
