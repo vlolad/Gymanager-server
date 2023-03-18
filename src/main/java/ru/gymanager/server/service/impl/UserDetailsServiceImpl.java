@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (userData.isPresent()) {
             UserEntity user = userData.get();
             Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-            user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+            user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getRole().name())));
             return new User(user.getLogin(), user.getPassword(), authorities);
         } else {
             return null;

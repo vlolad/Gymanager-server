@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Role {
+public class RoleEntity {
     @Id
     @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.EntityIdGenerator")
     @GeneratedValue(generator = "entity_id")
@@ -20,14 +20,14 @@ public class Role {
     private String id;
 
     @Column(name = "name", length = 32, nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    public Role(String name) {
-        this.name = name;
+    public RoleEntity(String name) {
+        this.role = Role.valueOf(name);
     }
 
-    // todo vlados
-    public enum DefaultRoles {
+    public enum Role {
         ADMIN,
         USER
     }
