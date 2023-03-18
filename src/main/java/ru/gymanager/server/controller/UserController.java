@@ -13,6 +13,8 @@ import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.model.UserEntity;
 import ru.gymanager.server.service.UserService;
 
+import javax.validation.constraints.NotBlank;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -27,7 +29,7 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserInfoDto getUserByLogin(@RequestParam String login) {
+    public UserInfoDto getUserByLogin(@RequestParam @NotBlank String login) {
         Optional<UserEntity> user = userService.getUserByLogin(login);
         return user.map(userMapper::toUserInfoDto).orElse(null);
     }

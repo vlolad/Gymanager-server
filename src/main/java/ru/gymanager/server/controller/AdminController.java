@@ -59,7 +59,7 @@ public class AdminController {
     }
 
     @PatchMapping("/user/remove/role/{userId}/{roleName}")
-    public void deleteRole(@PathVariable @NotBlank String userId, @PathVariable @NotBlank String roleName) {
+    public void removeRole(@PathVariable @NotBlank String userId, @PathVariable @NotBlank String roleName) {
         log.info("Remove role={} from user id={}", roleName, userId);
         roleService.deleteRoleFromUser(userId, roleName);
     }
