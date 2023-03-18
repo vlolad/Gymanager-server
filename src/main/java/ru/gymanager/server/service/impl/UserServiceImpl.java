@@ -8,14 +8,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import ru.gymanager.server.dto.UserInfoDto;
 import ru.gymanager.server.exception.BadRequestException;
-import ru.gymanager.server.exception.NotFoundException;
 import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.model.Role;
 import ru.gymanager.server.model.UserEntity;
 import ru.gymanager.server.dto.UserCreationDto;
-import ru.gymanager.server.model.dto.UserCreationDto;
-import ru.gymanager.server.model.dto.UserUpdateDto;
 import ru.gymanager.server.repository.RoleRepository;
 import ru.gymanager.server.repository.UserRepository;
 import ru.gymanager.server.service.RoleService;
@@ -62,22 +60,18 @@ public class UserServiceImpl implements UserService, RoleService {
         return userRepository.save(user);
     }
 
+    // TODO обновление пароля, телефон и почты должно быть отдельным методом
     @Override
     @Transactional
-    public UserEntity updateUser(UserUpdateDto updateDto) {
-        UserEntity user = findAndValidateUser(updateDto.getId());
-        if (!updateDto.getName().isBlank()) {
-            user.setName(updateDto.getName());
+    public UserEntity updateUser(UserInfoDto updateDto) {
+        UserEntity user = findAndValidateUser(updateDto.getLogin());
+        if (!updateDto.getFirstName().isBlank()) {
+            user.setFirstName(updateDto.getFirstName());
         }
-        if (!updateDto.getLogin().isBlank()) {
-            user.setLogin(updateDto.getLogin());
-        }
-        if (!updateDto.getPassword().isBlank()) {
-            log.warn("Update user password (id={})", updateDto.getId());
-            user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
-        }
-        if (!updateDto.getEmail().isBlank()) {
-            user.setEmail(updateDto.getEmail());
+        if (!updateDto.getMiddleName().isBlank()) {
+            user.setMiddleName(updateDto.getMiddleName());
+        }if (!updateDto.getLastName().isBlank()) {
+            user.setLastName(updateDto.getLastName());
         }
 
         return user;
@@ -85,7 +79,6 @@ public class UserServiceImpl implements UserService, RoleService {
 
     @Override
     public void deleteUser(String userId) {
-        findAndValidateUser(userId);
         userRepository.deleteById(userId);
     }
 
@@ -121,20 +114,20 @@ public class UserServiceImpl implements UserService, RoleService {
 
     @Override
     @Transactional
-    public UserEntity deleteRoleFromUser(String userId, String roleName) {
-        UserEntity user = findAndValidateUser(userId);
+    public UserEntity deleteRoleFromUser(String userLogin, String roleName) {
+        UserEntity user = findAndValidateUser(userLogin);
         log.info("User found with id={}", user.getId());
         Role role = findAndValidateRole(roleName);
         if (!user.getRoles().contains(role)) {
-            log.warn("User (id={}) don't have role={}", userId, roleName);
+            log.warn("User (id={}) don't have role={}", userLogin, roleName);
             throw new BadRequestException("This user don't have this role");
         }
         user.getRoles().remove(role);
         return user;
     }
 
-    private UserEntity findAndValidateUser(String userId) {
-        Optional<UserEntity> user = userRepository.findById(userId);
+    private UserEntity findAndValidateUser(String login) {
+        Optional<UserEntity> user = userRepository.findByLogin(login);
         if (user.isEmpty()) {
             throw new NotFoundException("User with login " + login + " not found!");
         }

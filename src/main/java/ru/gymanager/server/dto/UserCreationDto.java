@@ -1,5 +1,6 @@
 package ru.gymanager.server.dto;
 
+import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class UserCreationDto {
     @NotNull
     private String password;
     @NotNull
+    @Email
     private String email;
     @NotNull
     private String phone;

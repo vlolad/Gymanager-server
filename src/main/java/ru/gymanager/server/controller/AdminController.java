@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.gymanager.server.dto.UserCreationDto;
+import ru.gymanager.server.dto.UserInfoDto;
 import ru.gymanager.server.mapper.UserMapper;
-import ru.gymanager.server.model.dto.SimpleResponse;
-import ru.gymanager.server.model.dto.UserCreationDto;
-import ru.gymanager.server.model.dto.UserEntityDto;
-import ru.gymanager.server.model.dto.UserUpdateDto;
 import ru.gymanager.server.service.RoleService;
 import ru.gymanager.server.service.UserService;
 
@@ -34,35 +32,34 @@ public class AdminController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserEntityDto createUser(@RequestBody UserCreationDto newUser) {
+    public UserInfoDto createUser(@RequestBody UserCreationDto newUser) {
         log.info("Creating new user with login={}", newUser.getLogin());
-        return userMapper.toUserEntityDto(userService.createUser(newUser));
+        return userMapper.toUserInfoDto(userService.createUser(newUser));
     }
 
     @PatchMapping("/user/update")
-    public UserEntityDto updateUser(@RequestBody UserUpdateDto updateDto) {
+    public UserInfoDto updateUser(@RequestBody UserInfoDto updateDto) {
         log.info("Update user with id={}", updateDto.getId());
-        return userMapper.toUserEntityDto(userService.updateUser(updateDto));
+        return userMapper.toUserInfoDto(userService.updateUser(updateDto));
     }
 
     @DeleteMapping("/user/delete/{userId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public SimpleResponse deleteUser(@PathVariable @NotBlank String userId) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUser(@PathVariable @NotBlank String userId) {
         log.warn("Delete user with id={}", userId);
         userService.deleteUser(userId);
-        return new SimpleResponse("User successfully delete");
     }
 
     @PatchMapping("/user/add/role/{userId}/{roleName}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserEntityDto addRole(@PathVariable @NotBlank String userId, @PathVariable @NotBlank String roleName) {
+    public void addRole(@PathVariable @NotBlank String userId, @PathVariable @NotBlank String roleName) {
         log.info("Add role={} to user id={}", roleName, userId);
-        return userMapper.toUserEntityDto(roleService.setRoleToUser(userId, roleName));
+        roleService.setRoleToUser(userId, roleName);
     }
 
     @PatchMapping("/user/remove/role/{userId}/{roleName}")
-    public UserEntityDto deleteRole(@PathVariable @NotBlank String userId, @PathVariable @NotBlank String roleName) {
-        log.info("Remove role={} from user id={}", roleName, userId);
-        return userMapper.toUserEntityDto(roleService.deleteRoleFromUser(userId, roleName));
+    public void deleteRole(@PathVariable @NotBlank String userLogin, @PathVariable @NotBlank String roleName) {
+        log.info("Remove role={} from user id={}", roleName, userLogin);
+        roleService.deleteRoleFromUser(userLogin, roleName);
     }
 }

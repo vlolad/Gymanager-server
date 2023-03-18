@@ -2,10 +2,10 @@ package ru.gymanager.server.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import ru.gymanager.server.dto.UserCreationDto;
+import ru.gymanager.server.dto.UserInfoDto;
 import ru.gymanager.server.model.Role;
 import ru.gymanager.server.model.UserEntity;
-import ru.gymanager.server.model.dto.UserCreationDto;
-import ru.gymanager.server.model.dto.UserEntityDto;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +16,7 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     UserEntity toUserEntity(UserCreationDto userDto);
 
-    UserEntityDto toUserEntityDto(UserEntity entity);
+    UserInfoDto toUserInfoDto(UserEntity entity);
 
     List<String> toRoleNameList(Collection<Role> roles);
 
