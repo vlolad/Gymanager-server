@@ -16,8 +16,8 @@ public class FilterConfig {
     public FilterRegistrationBean<TransactionFilter> filterRegistration() {
         FilterRegistrationBean<TransactionFilter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(transactionFilter);
-        filterFilterRegistrationBean.addUrlPatterns("/**");
         filterFilterRegistrationBean.setName("Transaction logger filter");
+        filterFilterRegistrationBean.setOrder(1);
         return filterFilterRegistrationBean;
     }
 }

@@ -26,6 +26,7 @@ public class Role {
         this.name = name;
     }
 
+    // todo vlados
     public enum DefaultRoles {
         ADMIN,
         USER

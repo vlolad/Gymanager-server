@@ -17,9 +17,9 @@ services:
         aliases:
           - gymanager_network
     ports:
-      - "9090:8080"
+      - "8080:8080"
     expose:
-      - 9090
+      - 8080
     depends_on:
       - gymanager-db
     environment:

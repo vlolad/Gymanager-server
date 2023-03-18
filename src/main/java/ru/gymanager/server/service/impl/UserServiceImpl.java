@@ -38,12 +38,11 @@ public class UserServiceImpl implements UserService, RoleService {
     }
 
     @Override
-    public UserEntity getUserByLogin(String login) {
+    public Optional<UserEntity> getUserByLogin(String login) {
         if (StringUtils.isBlank(login)) {
             return null;
         }
-        Optional<UserEntity> user = userRepository.findByLogin(login);
-        return user.orElse(null);
+        return userRepository.findByLogin(login);
     }
 
     @Override

@@ -49,7 +49,7 @@ CREATE TABLE gm_users (
     first_name    varchar(32)  NOT NULL,
     middle_name   varchar(32),
     last_name     varchar(32),
-    email         varchar(128) NOT NULL UNIQUE,
+    email         varchar(128) UNIQUE,
     phone         char(11) NOT NULL UNIQUE,
     password      varchar(128) NOT NULL
 );
@@ -73,7 +73,7 @@ CREATE TABLE gm_clients(
     middle_name   varchar(32),
     last_name     varchar(32),
     phone         char(11) not null UNIQUE,
-    description   text
+    description   varchar(1024)
 );
 
 -- Таблица связи тренера и клиента. Клиент может ходить к разным тренерам.

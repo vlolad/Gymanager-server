@@ -1,21 +1,22 @@
 package ru.gymanager.server.model;
 
 import java.sql.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-
 @Entity
-@Table(name = "gm_users")
+@Table(name = "gm_clients")
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserEntity {
+public class ClientEntity {
     @Id
     @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.EntityIdGenerator")
     @GeneratedValue(generator = "entity_id")
@@ -24,9 +25,6 @@ public class UserEntity {
 
     @Column(name = "creation_date", nullable = false)
     private Date creationDate;
-
-    @Column(name="login", length = 32, nullable = false, unique = true)
-    private String login;
 
     @Column(name = "firstName", length = 32, nullable = false)
     private String firstName;
@@ -37,18 +35,9 @@ public class UserEntity {
     @Column(name = "lastName", length = 32)
     private String lastName;
 
-    @Column(name = "email", length = 128, unique = true)
-    private String email;
-
     @Column(name = "phone", length = 11, nullable = false, unique = true)
     private String phone;
 
-    @Column(name = "password", length = 128, nullable = false)
-    private String password;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "gm_users_roles",
-    joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-    inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private Collection<Role> roles = new HashSet<>();
+    @Column(name = "description", length = 1024)
+    private String description;
 }
