@@ -1,13 +1,13 @@
 package ru.gymanager.server.service;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 import ru.gymanager.server.dto.ClientDto;
 import ru.gymanager.server.model.ClientEntity;
 
 public interface ClientService {
     ClientEntity createClient(ClientDto clientDto);
-    Optional<ClientEntity> getClient(String clientId);
-    Optional<ClientEntity> getClientByPhone(String phone);
-    Collection<ClientEntity> getClients(String trainerId);
+    ClientEntity getClient(String clientId);
+    ClientEntity getClientByPhone(String phone);
+    List<ClientEntity> getClients();
+    ClientEntity createLink(ClientEntity client);
 }

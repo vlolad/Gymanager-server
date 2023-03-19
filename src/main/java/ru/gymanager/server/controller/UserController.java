@@ -1,6 +1,5 @@
 package ru.gymanager.server.controller;
 
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +29,7 @@ public class UserController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public UserInfoDto getUserByLogin(@RequestParam @NotBlank String login) {
-        Optional<UserEntity> user = userService.getUserByLogin(login);
-        return user.map(userMapper::toUserInfoDto).orElse(null);
+        UserEntity user = userService.getUserByLogin(login);
+        return userMapper.toUserInfoDto(user);
     }
 }

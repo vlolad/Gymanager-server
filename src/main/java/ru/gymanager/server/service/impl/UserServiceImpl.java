@@ -14,6 +14,7 @@ import ru.gymanager.server.exception.BadRequestException;
 import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.model.RoleEntity;
 import ru.gymanager.server.model.UserEntity;
+import ru.gymanager.server.model.UserLoginId;
 import ru.gymanager.server.repository.RoleRepository;
 import ru.gymanager.server.repository.UserRepository;
 import ru.gymanager.server.service.RoleService;
@@ -23,7 +24,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-// TODO сделать отедльную реализацию RoleService
+// TODO сделать отдельную реализацию RoleService
 public class UserServiceImpl implements UserService, RoleService {
 
     private final RoleRepository roleRepository;
@@ -41,8 +42,17 @@ public class UserServiceImpl implements UserService, RoleService {
     }
 
     @Override
-    public Optional<UserEntity> getUserByLogin(String login) {
-        return userRepository.findByLogin(login);
+    public UserEntity getUserByLogin(String login) {
+        Optional<UserEntity> user = userRepository.findByLogin(login);
+        if (user.isEmpty()) {
+            throw new NotFoundException("User with login=" + login + " not found.");
+        }
+        return user.get();
+    }
+
+    @Override
+    public UserLoginId findTrainerInfo(String login) {
+        return userRepository.findUserByLogin(login);
     }
 
     @Override
