@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ClientTrainerLinkRepository extends JpaRepository<ClientTrainerLink, String> {
     List<ClientTrainerLink> findAllByTrainerId(String trainerId);
+    ClientTrainerLink findByClientIdAndTrainerId(String clientId, String trainerId);
 }

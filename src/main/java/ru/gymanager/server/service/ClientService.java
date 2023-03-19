@@ -10,4 +10,5 @@ public interface ClientService {
     ClientEntity getClientByPhone(String phone);
     List<ClientEntity> getClients();
     ClientEntity createLink(ClientEntity client);
+    void removeLink(String clientId);
 }

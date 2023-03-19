@@ -63,4 +63,6 @@ public class AdminController {
         log.info("Remove role={} from user id={}", roleName, userId);
         roleService.deleteRoleFromUser(userId, roleName);
     }
+
+    //TODO search and delete orphan clients
 }

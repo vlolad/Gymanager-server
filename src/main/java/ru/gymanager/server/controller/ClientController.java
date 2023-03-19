@@ -48,4 +48,9 @@ public class ClientController {
     public ClientDto getClientByPhone(@PathVariable @NotBlank String phone) {
         return clientMapper.toDto(clientService.getClientByPhone(phone));
     }
+
+    @DeleteMapping("/delete/{clientId}")
+    public void removeClientFromTrainer(@PathVariable @NotBlank String clientId) {
+        clientService.removeLink(clientId);
+    }
 }

@@ -42,10 +42,13 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public ClientEntity createClient(ClientDto clientDto) {
+        //Проверяем, есть ли клиент с таким номером телефона
         ClientEntity check = findClientByPhone(clientDto.getPhone());
         if (check != null) {
+            //Если да - просто создаем связь с тренером
             return createLink(check);
         }
+        //Если нет - создаем клиента, и после создаем связь
         ClientEntity client = clientMapper.toEntity(clientDto);
         client.setCreationDate(LocalDateTime.now());
         log.info("Create new client with phone={}", client.getPhone());
@@ -81,10 +84,21 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     public ClientEntity createLink(ClientEntity client) {
+        //Связь создается через сущность-прослойку
         UserEntity trainer = userService.getUserByLogin(AuthenticationInfoService.getCurrentUserLogin());
         ClientTrainerLink link = new ClientTrainerLink(null, LocalDateTime.now(), trainer.getId(), client.getId());
         linkRepository.save(link);
         return client;
+    }
+
+    @Override
+    @Transactional
+    public void removeLink(String clientId) {
+        String trainerId = userService.findTrainerInfo(AuthenticationInfoService.getCurrentUserLogin()).getId();
+        ClientTrainerLink link = linkRepository.findByClientIdAndTrainerId(clientId, trainerId);
+        if (link != null) {
+            linkRepository.deleteById(link.getId());
+        }
     }
 
     private ClientEntity findClientByPhone(String phone) {
