@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.gymanager.server.util.validate.Create;
+import ru.gymanager.server.util.validate.Update;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ClientDto {
+    @NotNull(groups = {Update.class})
     private String id;
     @NotNull(groups = {Create.class})
     private String firstName;

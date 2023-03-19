@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,28 @@ public class ClientServiceImpl implements ClientService {
         log.info("Create new client with phone={}", client.getPhone());
         client = clientRepository.save(client);
         return createLink(client);
+    }
+
+    @Override
+    @Transactional
+    public ClientEntity updateClient(ClientDto clientDto) {
+        ClientEntity client = findClientById(clientDto.getId());
+        if (!StringUtils.isBlank(clientDto.getFirstName())) {
+            client.setFirstName(clientDto.getFirstName());
+        }
+        if (!StringUtils.isBlank(clientDto.getMiddleName())) {
+            client.setMiddleName(clientDto.getMiddleName());
+        }
+        if (!StringUtils.isBlank(clientDto.getLastName())) {
+            client.setLastName(client.getLastName());
+        }
+        if (!StringUtils.isBlank(clientDto.getPhone())) {
+            client.setPhone(client.getPhone());
+        }
+        if (!StringUtils.isBlank(clientDto.getDescription())) {
+            client.setDescription(client.getDescription());
+        }
+        return client;
     }
 
     //TODO find workouts

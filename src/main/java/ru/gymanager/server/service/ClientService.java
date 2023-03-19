@@ -6,6 +6,8 @@ import ru.gymanager.server.model.ClientEntity;
 
 public interface ClientService {
     ClientEntity createClient(ClientDto clientDto);
+
+    ClientEntity updateClient(ClientDto clientDto);
     ClientEntity getClient(String clientId);
     ClientEntity getClientByPhone(String phone);
     List<ClientEntity> getClients();

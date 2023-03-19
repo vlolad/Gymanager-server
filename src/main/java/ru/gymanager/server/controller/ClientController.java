@@ -10,6 +10,7 @@ import ru.gymanager.server.mapper.ClientMapper;
 import ru.gymanager.server.model.ClientEntity;
 import ru.gymanager.server.service.ClientService;
 import ru.gymanager.server.util.validate.Create;
+import ru.gymanager.server.util.validate.Update;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -47,6 +48,11 @@ public class ClientController {
     @GetMapping("phone/{phone}")
     public ClientDto getClientByPhone(@PathVariable @NotBlank String phone) {
         return clientMapper.toDto(clientService.getClientByPhone(phone));
+    }
+
+    @PatchMapping("/update")
+    public ClientDto updateClient(@RequestBody @Validated(Update.class) ClientDto clientDto) {
+        return clientMapper.toDto(clientService.updateClient(clientDto));
     }
 
     @DeleteMapping("/delete/{clientId}")
