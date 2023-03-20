@@ -142,4 +142,12 @@ CREATE TABLE  gm_exercise_results
 );
 create index gm_exercise_results_exc_id on gm_exercise_results (exercise_id);
 
+insert into gm_dict_measures values (generateid(), 'count', 'Количество', 'раз');
+insert into gm_dict_measures values (generateid(), 'meter', 'Дистанция в метрах', 'м');
+
+insert into gm_dict_exercises select generateid(), 'pushups', 'Отжимания', 'Отжимания от пола', m.id
+  from gm_dict_measures m where system_name = 'count';
+insert into gm_dict_exercises select generateid(), 'sprint_one_km', 'Бег', 'Бег 1 километр', m.id
+  from gm_dict_measures m where system_name = 'meter';
+
 COMMIT;

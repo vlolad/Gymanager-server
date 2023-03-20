@@ -1,11 +1,17 @@
 package ru.gymanager.server.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "gm_dict_exercises")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ExerciseTypeEntity {
     @Id
     @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.EntityIdGenerator")
@@ -19,7 +25,6 @@ public class ExerciseTypeEntity {
     @Column(name = "description")
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "gm_dict_measures",
-    joinColumns = {@JoinColumn(name = "id")})
+    @JoinColumn(name = "measure_type_id")
     private MeasureTypeEntity measure;
 }
