@@ -1,17 +1,16 @@
 package ru.gymanager.server.service;
 
 import javax.xml.bind.ValidationException;
-import ru.gymanager.server.model.Role;
-import ru.gymanager.server.model.UserEntity;
+import ru.gymanager.server.model.RoleEntity;
 
 import java.util.List;
 
 public interface RoleService {
-    List<Role> getAllRoles();
+    List<RoleEntity> getAllRoles();
 
-    Role createRole(String roleName) throws ValidationException;
+    RoleEntity createRole(String roleName) throws ValidationException;
 
     void setRoleToUser(String userLogin, String roleName);
 
-    UserEntity deleteRoleFromUser(String userId, String roleName);
+    void deleteRoleFromUser(String userId, String roleName);
 }

@@ -1,6 +1,5 @@
 package ru.gymanager.server.controller;
 
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +11,8 @@ import ru.gymanager.server.dto.UserInfoDto;
 import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.model.UserEntity;
 import ru.gymanager.server.service.UserService;
+
+import javax.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/user")
@@ -27,8 +28,8 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserInfoDto getUserByLogin(@RequestParam String login) {
-        Optional<UserEntity> user = userService.getUserByLogin(login);
-        return user.map(userMapper::toUserInfoDto).orElse(null);
+    public UserInfoDto getUserByLogin(@RequestParam @NotBlank String login) {
+        UserEntity user = userService.getUserByLogin(login);
+        return userMapper.toUserInfoDto(user);
     }
 }

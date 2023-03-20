@@ -1,6 +1,6 @@
 package ru.gymanager.server.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
 
@@ -22,7 +22,7 @@ public class ClientEntity {
     private String id;
 
     @Column(name = "creation_date", nullable = false)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @Column(name = "first_Name", length = 32, nullable = false)
     private String firstName;

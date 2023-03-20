@@ -29,13 +29,13 @@ public class UserEntity {
     @Column(name="login", length = 32, nullable = false, unique = true)
     private String login;
 
-    @Column(name = "firstName", length = 32, nullable = false)
+    @Column(name = "first_name", length = 32, nullable = false)
     private String firstName;
 
-    @Column(name = "middleName", length = 32)
+    @Column(name = "middle_name", length = 32)
     private String middleName;
 
-    @Column(name = "lastName", length = 32)
+    @Column(name = "last_name", length = 32)
     private String lastName;
 
     @Column(name = "email", length = 128, unique = true)
@@ -51,5 +51,5 @@ public class UserEntity {
     @JoinTable(name = "gm_users_roles",
     joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private Collection<Role> roles = new HashSet<>();
+    private Collection<RoleEntity> roles = new HashSet<>();
 }

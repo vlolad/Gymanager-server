@@ -5,9 +5,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import ru.gymanager.server.model.Role.DefaultRoles;
+import ru.gymanager.server.dto.UserInfoDto;
+import ru.gymanager.server.model.RoleEntity.Role;
 import ru.gymanager.server.model.UserEntity;
-import ru.gymanager.server.dto.UserCreationDto;
 import ru.gymanager.server.service.RoleService;
 import ru.gymanager.server.service.UserService;
 
@@ -23,11 +23,11 @@ public class ServerApplication {
     CommandLineRunner run(UserService userService, RoleService roleService) {
         return args -> {
             if (roleService.getAllRoles().isEmpty()) {
-                roleService.createRole(DefaultRoles.ADMIN.name());
-                roleService.createRole(DefaultRoles.USER.name());
+                roleService.createRole(Role.ADMIN.name());
+                roleService.createRole(Role.USER.name());
             }
-            UserEntity user = userService.createUser(
-                new UserCreationDto(
+            UserEntity admin = userService.createUser(
+                new UserInfoDto(
                     "test_admin",
                     "qwerty",
                     "Admin Adminovich",
@@ -35,16 +35,15 @@ public class ServerApplication {
                     "88889990011"
                 )
             );
-            roleService.setRoleToUser(user.getLogin(), DefaultRoles.ADMIN.name());
-            // TODO test login to constant
-            userService.createUser(new UserCreationDto(
+            roleService.setRoleToUser(admin.getId(), Role.ADMIN.name());
+            UserEntity user = userService.createUser(new UserInfoDto(
                 "test_user",
                 "qwerty",
                 "User",
                 "user@null.org",
                 "12223334455"
             ));
-            roleService.setRoleToUser("test_user", DefaultRoles.USER.name());
+            roleService.setRoleToUser(user.getId(), Role.USER.name());
         };
     }
 }

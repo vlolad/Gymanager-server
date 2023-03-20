@@ -5,11 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.gymanager.server.dto.UserCreationDto;
 import ru.gymanager.server.dto.UserInfoDto;
 import ru.gymanager.server.mapper.UserMapper;
 import ru.gymanager.server.service.RoleService;
 import ru.gymanager.server.service.UserService;
+import ru.gymanager.server.util.validate.Create;
+import ru.gymanager.server.util.validate.Update;
 
 import javax.validation.constraints.NotBlank;
 
@@ -32,13 +33,13 @@ public class AdminController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserInfoDto createUser(@RequestBody UserCreationDto newUser) {
+    public UserInfoDto createUser(@RequestBody @Validated(Create.class) UserInfoDto newUser) {
         log.info("Creating new user with login={}", newUser.getLogin());
         return userMapper.toUserInfoDto(userService.createUser(newUser));
     }
 
     @PatchMapping("/user/update")
-    public UserInfoDto updateUser(@RequestBody UserInfoDto updateDto) {
+    public UserInfoDto updateUser(@RequestBody @Validated(Update.class) UserInfoDto updateDto) {
         log.info("Update user with id={}", updateDto.getId());
         return userMapper.toUserInfoDto(userService.updateUser(updateDto));
     }
@@ -58,8 +59,10 @@ public class AdminController {
     }
 
     @PatchMapping("/user/remove/role/{userId}/{roleName}")
-    public void deleteRole(@PathVariable @NotBlank String userLogin, @PathVariable @NotBlank String roleName) {
-        log.info("Remove role={} from user id={}", roleName, userLogin);
-        roleService.deleteRoleFromUser(userLogin, roleName);
+    public void removeRole(@PathVariable @NotBlank String userId, @PathVariable @NotBlank String roleName) {
+        log.info("Remove role={} from user id={}", roleName, userId);
+        roleService.deleteRoleFromUser(userId, roleName);
     }
+
+    //TODO search and delete orphan clients
 }
