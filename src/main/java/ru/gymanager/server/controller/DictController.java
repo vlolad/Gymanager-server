@@ -37,11 +37,11 @@ public class DictController {
 
     @GetMapping("/exercise")
     public List<ExerciseTypeDto> getExerciseTypes() {
-        return dictService.getExerciseTypes().stream().map(exerciseTypeMapper::toDto).collect(Collectors.toList());
+        return exerciseTypeMapper.toDtoList(dictService.getExerciseTypes());
     }
 
     @GetMapping("/measure")
     public List<MeasureTypeDto> getMeasureTypes() {
-        return dictService.getMeasureTypes().stream().map(measureTypeMapper::toDto).collect(Collectors.toList());
+        return measureTypeMapper.toDtoList(dictService.getMeasureTypes());
     }
 }
