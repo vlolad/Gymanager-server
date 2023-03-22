@@ -77,6 +77,7 @@ CREATE TABLE gm_clients
     middle_name   varchar(32),
     last_name     varchar(32),
     phone         char(11)    not null UNIQUE,
+    birthday      date,
     description   varchar(1024)
 );
 
