@@ -41,7 +41,7 @@ public class ClientEntity {
     private String description;
 
     @Column(name = "birthday")
-    private Date date;
+    private Date birthday;
 
     @Transient
     private List<WorkoutEntity> workouts;
