@@ -1,5 +1,6 @@
 package ru.gymanager.server.model;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
@@ -38,6 +39,9 @@ public class ClientEntity {
 
     @Column(name = "description", length = 1024)
     private String description;
+
+    @Column(name = "birthday")
+    private Date date;
 
     @Transient
     private List<WorkoutEntity> workouts;

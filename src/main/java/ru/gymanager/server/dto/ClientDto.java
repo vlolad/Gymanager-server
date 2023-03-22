@@ -1,5 +1,6 @@
 package ru.gymanager.server.dto;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +25,6 @@ public class ClientDto {
     @NotNull(groups = {Create.class})
     private String phone;
     private String description;
+    private Date birthDay;
     private List<WorkoutShortDto> workouts;
 }
