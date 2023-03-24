@@ -50,7 +50,7 @@ public class ClientController {
         return clientMapper.toDto(clientService.getClientByPhone(phone));
     }
 
-    @PatchMapping("/update")
+    @PutMapping("/update")
     public ClientDto updateClient(@RequestBody @Validated(Update.class) ClientDto clientDto) {
         return clientMapper.toDto(clientService.updateClient(clientDto));
     }
