@@ -1,6 +1,7 @@
 package ru.gymanager.server.filter;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -54,12 +55,13 @@ public class TransactionFilter implements Filter {
     private String extractBody(HttpServletRequest request) {
         if (StringUtils.equals(request.getMethod(), "POST") || StringUtils.equals(request.getMethod(), "PUT")) {
             try {
-                return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+                Scanner s = new Scanner(request.getInputStream(), request.getCharacterEncoding()).useDelimiter("\\A");
+                return s.hasNextLine() ? s.nextLine() : "no body";
             } catch (IOException exception) {
                 log.error("Failed to extract body!", exception);
-                return "";
+                return "body extraction failed";
             }
         }
-        return "";
+        return "no body";
     }
 }
