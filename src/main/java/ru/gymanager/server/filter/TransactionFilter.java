@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionFilter implements Filter {
 
-    private static final String LOG_REQUEST = "REQUEST ({}) [{}]::{} {}";
+    private static final String LOG_REQUEST = "REQUEST ({}) [{}]::{}";
     private static final String LOG_RESPONSE = "RESPONSE ({}) FINISHED";
 
     @Override
@@ -40,8 +40,7 @@ public class TransactionFilter implements Filter {
             LOG_REQUEST,
             auth.getName(),
             request.getMethod(),
-            request.getServletPath(),
-            extractBody(request)
+            request.getServletPath()
         );
 
         filterChain.doFilter(request, response);
@@ -50,18 +49,5 @@ public class TransactionFilter implements Filter {
             LOG_RESPONSE,
             auth.getName()
         );
-    }
-
-    private String extractBody(HttpServletRequest request) {
-        if (StringUtils.equals(request.getMethod(), "POST") || StringUtils.equals(request.getMethod(), "PUT")) {
-            try {
-                Scanner s = new Scanner(request.getInputStream(), request.getCharacterEncoding()).useDelimiter("\\A");
-                return s.hasNextLine() ? s.nextLine() : "no body";
-            } catch (IOException exception) {
-                log.error("Failed to extract body!", exception);
-                return "body extraction failed";
-            }
-        }
-        return "no body";
     }
 }
