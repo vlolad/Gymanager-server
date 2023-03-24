@@ -25,6 +25,6 @@ public class ClientDto {
     @NotNull(groups = {Create.class})
     private String phone;
     private String description;
-    private Date birthDay;
+    private Date birthday;
     private List<WorkoutShortDto> workouts;
 }

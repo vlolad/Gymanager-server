@@ -1,6 +1,7 @@
 package ru.gymanager.server.filter;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -9,6 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class TransactionFilter implements Filter {
-    private static final String LOG_REQUEST = "REQUEST ({}) [{}]::{}";
+
+    private static final String LOG_REQUEST = "REQUEST ({}) [{}]::{} {}";
     private static final String LOG_RESPONSE = "RESPONSE ({}) FINISHED";
 
     @Override
@@ -32,16 +35,31 @@ public class TransactionFilter implements Filter {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info(LOG_REQUEST,
-                auth.getName(),
-                request.getMethod(),
-                request.getServletPath()
+        log.info(
+            LOG_REQUEST,
+            auth.getName(),
+            request.getMethod(),
+            request.getServletPath(),
+            extractBody(request)
         );
 
         filterChain.doFilter(request, response);
 
-        log.info(LOG_RESPONSE,
-                auth.getName()
+        log.info(
+            LOG_RESPONSE,
+            auth.getName()
         );
+    }
+
+    private String extractBody(HttpServletRequest request) {
+        if (StringUtils.equals(request.getMethod(), "POST") || StringUtils.equals(request.getMethod(), "PUT")) {
+            try {
+                return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            } catch (IOException exception) {
+                log.error("Failed to extract body!", exception);
+                return "";
+            }
+        }
+        return "";
     }
 }
