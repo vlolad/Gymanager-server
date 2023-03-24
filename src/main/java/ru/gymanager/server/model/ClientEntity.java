@@ -1,6 +1,6 @@
 package ru.gymanager.server.model;
 
-import java.sql.Date;
+import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
