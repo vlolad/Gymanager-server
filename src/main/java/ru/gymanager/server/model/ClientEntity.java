@@ -1,5 +1,6 @@
 package ru.gymanager.server.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Setter
 @NoArgsConstructor
 public class ClientEntity {
+
     @Id
     @GenericGenerator(name = "entity_id", strategy = "ru.gymanager.server.util.EntityIdGenerator")
     @GeneratedValue(generator = "entity_id")
@@ -45,4 +47,9 @@ public class ClientEntity {
 
     @Transient
     private List<WorkoutEntity> workouts;
+
+    @Override
+    public String toString() {
+        return String.format("[%s] :: %s %s", phone, firstName, new SimpleDateFormat("yyyy-MM-dd").format(birthday));
+    }
 }

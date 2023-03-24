@@ -52,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
         //Если нет - создаем клиента, и после создаем связь
         ClientEntity client = clientMapper.toEntity(clientDto);
         client.setCreationDate(LocalDateTime.now());
-        log.info("Create new client with phone={}", client.getPhone());
+        log.info("New client created :: {}", client);
         client = clientRepository.save(client);
         return createLink(client);
     }

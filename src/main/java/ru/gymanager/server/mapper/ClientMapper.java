@@ -14,6 +14,7 @@ public interface ClientMapper {
     ClientDto toDto(ClientEntity clientEntity);
 
     @Mapping(target = "workouts", ignore = true)
+    @Mapping(source = "birthday", target = "birthday", dateFormat = "yyyy-MM-dd") // без этого отказывается маппить
     ClientEntity toEntity(ClientDto clientDto);
 
     List<ClientDtoShort> toDtoShortList(List<ClientEntity> entityList);
