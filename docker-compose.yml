@@ -23,7 +23,7 @@ services:
     depends_on:
       - gymanager-db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://gymanager-db:5432/gmr
+      SPRING_DATASOURCE_URL: jdbc:postgresql://gymanager-db:5432/${DB_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${DB_USER_NAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
@@ -40,11 +40,15 @@ services:
         aliases:
           - gymanager_network
     environment:
-      POSTGRES_DB: gmr
+      POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER_NAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
 #      вынести наружу
       PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${DB_USER_NAME} -d ${DB_DATABASE}'"]
+      timeout: 5s
+      retries: 5
     ports:
       - "6546:5432"
     volumes:
